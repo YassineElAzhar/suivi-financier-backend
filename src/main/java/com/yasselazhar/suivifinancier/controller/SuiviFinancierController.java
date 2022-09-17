@@ -1,15 +1,11 @@
 package com.yasselazhar.suivifinancier.controller;
 
-import com.yasselazhar.suivifinancier.exception.ResourceNotFoundException;
-import com.yasselazhar.suivifinancier.handler.TypeIncomeHandler;
-import com.yasselazhar.suivifinancier.model.TypeIncome;
-import com.yasselazhar.suivifinancier.repository.TypeIncomeRepository;
+import com.yasselazhar.suivifinancier.handler.SuiviFinancierHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -20,34 +16,12 @@ import java.util.List;
 public class SuiviFinancierController {
 
     @Autowired
-    TypeIncomeRepository typeIncomeRepository;
+    SuiviFinancierHandler suiviFinancierHandler;
+    
 
-    @Autowired
-    TypeIncomeHandler typeIncomeHandler;
-
-    @GetMapping("/typeIncomes")
-    public List<TypeIncome> getAllTypeIncomes() {
-        return typeIncomeHandler.getAllTypeIncomes();
+    @GetMapping("/allIncomes")
+    public List<HashMap<String,String>> getAllTypeIncomes() {
+        return suiviFinancierHandler.getAllIncomes();
     }
-
-    @PostMapping("/typeIncomes")
-    public TypeIncome createTypeIncome(@Valid @RequestBody TypeIncome typeIncome) {
-        return typeIncomeHandler.createTypeIncome(typeIncome);
-    }
-
-    @GetMapping("/typeIncomes/{id}")
-    public TypeIncome getTypeIncomeById(@PathVariable(value = "id") int typeIncomeId) {
-        return typeIncomeHandler.getTypeIncomeById(typeIncomeId);
-    }
-
-    @PutMapping("/typeIncomes/{id}")
-    public TypeIncome updateTypeIncome(@PathVariable(value = "id") int typeIncomeId,
-                                           @Valid @RequestBody TypeIncome typeIncomeDetails) {
-    	return typeIncomeHandler.updateTypeIncome(typeIncomeId,typeIncomeDetails);
-    }
-
-    @DeleteMapping("/typeIncomes/{id}")
-    public ResponseEntity<?> deleteTypeIncome(@PathVariable(value = "id") int typeIncomeId) {
-    	return typeIncomeHandler.deleteTypeIncome(typeIncomeId);
-    }
+    
 }

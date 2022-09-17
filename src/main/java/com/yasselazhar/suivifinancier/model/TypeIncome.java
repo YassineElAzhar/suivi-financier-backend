@@ -15,7 +15,7 @@ import java.util.Date;
 @Entity
 @Table(name = "type_income")
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(value = {"createdAt", "updatedAt"},
+@JsonIgnoreProperties(value = {"dinsert", "dupdate"},
         allowGetters = true)
 public class TypeIncome {
     @Id
