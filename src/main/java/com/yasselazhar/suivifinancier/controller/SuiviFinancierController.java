@@ -1,6 +1,7 @@
 package com.yasselazhar.suivifinancier.controller;
 
 import com.yasselazhar.suivifinancier.exception.ResourceNotFoundException;
+import com.yasselazhar.suivifinancier.handler.TypeIncomeHandler;
 import com.yasselazhar.suivifinancier.model.TypeIncome;
 import com.yasselazhar.suivifinancier.repository.TypeIncomeRepository;
 
@@ -21,42 +22,32 @@ public class SuiviFinancierController {
     @Autowired
     TypeIncomeRepository typeIncomeRepository;
 
+    @Autowired
+    TypeIncomeHandler typeIncomeHandler;
+
     @GetMapping("/typeIncomes")
     public List<TypeIncome> getAllTypeIncomes() {
-        return typeIncomeRepository.findAll();
+        return typeIncomeHandler.getAllTypeIncomes();
     }
 
     @PostMapping("/typeIncomes")
     public TypeIncome createTypeIncome(@Valid @RequestBody TypeIncome typeIncome) {
-        return typeIncomeRepository.save(typeIncome);
+        return typeIncomeHandler.createTypeIncome(typeIncome);
     }
 
     @GetMapping("/typeIncomes/{id}")
     public TypeIncome getTypeIncomeById(@PathVariable(value = "id") int typeIncomeId) {
-        return typeIncomeRepository.findById(typeIncomeId)
-                .orElseThrow(() -> new ResourceNotFoundException("TypeIncome", "id", typeIncomeId));
+        return typeIncomeHandler.getTypeIncomeById(typeIncomeId);
     }
 
     @PutMapping("/typeIncomes/{id}")
     public TypeIncome updateTypeIncome(@PathVariable(value = "id") int typeIncomeId,
                                            @Valid @RequestBody TypeIncome typeIncomeDetails) {
-
-    	TypeIncome typeIncome = typeIncomeRepository.findById(typeIncomeId)
-                .orElseThrow(() -> new ResourceNotFoundException("TypeIncome", "id", typeIncomeId));
-
-    	typeIncome.setType(typeIncomeDetails.getType());
-
-    	TypeIncome updatedTypeIncome = typeIncomeRepository.save(typeIncome);
-        return updatedTypeIncome;
+    	return typeIncomeHandler.updateTypeIncome(typeIncomeId,typeIncomeDetails);
     }
 
     @DeleteMapping("/typeIncomes/{id}")
     public ResponseEntity<?> deleteTypeIncome(@PathVariable(value = "id") int typeIncomeId) {
-    	TypeIncome typeIncome = typeIncomeRepository.findById(typeIncomeId)
-                .orElseThrow(() -> new ResourceNotFoundException("TypeIncome", "id", typeIncomeId));
-
-    	typeIncomeRepository.delete(typeIncome);
-
-        return ResponseEntity.ok().build();
+    	return typeIncomeHandler.deleteTypeIncome(typeIncomeId);
     }
 }
