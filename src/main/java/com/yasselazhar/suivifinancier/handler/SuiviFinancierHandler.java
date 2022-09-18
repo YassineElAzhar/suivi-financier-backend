@@ -49,7 +49,7 @@ public class SuiviFinancierHandler {
 	}
 	
 	/**
-	 * getAllIncomes
+	 * getIncomeById
 	 * 
 	 * @return list of all incomes
 	 */
@@ -77,5 +77,22 @@ public class SuiviFinancierHandler {
 	public Income addIncome(Income income) {
 		return incomeRepository.save(income);
 	}
+
+    /**
+     * 
+     * @param incomeId
+     * @param incomeDetails
+     * @return income udpated
+     */
+    public Income updateIncome(int incomeId, Income incomeDetails) {
+
+    	Income income = incomeRepository.findById(incomeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Income", "id", incomeId));
+
+    	income.setType(incomeDetails.getType());
+
+    	Income updatedIncome = incomeRepository.save(income);
+        return updatedIncome;
+    }
 	
 }

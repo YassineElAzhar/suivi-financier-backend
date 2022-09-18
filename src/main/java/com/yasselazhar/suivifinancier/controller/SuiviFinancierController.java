@@ -53,4 +53,18 @@ public class SuiviFinancierController {
         return suiviFinancierHandler.addIncome(income);
     }
     
+    
+
+    /**
+     * 
+     * @param incomeId
+     * @param incomeDetails
+     * @return income udpated
+     */
+    @PutMapping("/incomes/{id}")
+    public Income updateIncome(@PathVariable(value = "id") int incomeId,
+                                           @Valid @RequestBody Income incomeDetails) {
+    	return suiviFinancierHandler.updateIncome(incomeId,incomeDetails);
+    }
+    
 }
