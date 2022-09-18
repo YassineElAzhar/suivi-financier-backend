@@ -1,6 +1,7 @@
 package com.yasselazhar.suivifinancier.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,7 +23,6 @@ public class Income {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "type", referencedColumnName = "id")
     private TypeIncome type;
@@ -33,10 +33,8 @@ public class Income {
     @NotBlank
     private String titre;
 
-    @NotBlank
     private int montant;
 
-    @NotBlank
     private Date dateIncome;
 
 
