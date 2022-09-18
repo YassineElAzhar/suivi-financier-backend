@@ -23,9 +23,7 @@ public class Income {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "type", referencedColumnName = "id")
-    private TypeIncome type;
+    private int type;
 
     @NotBlank
     private String provenance;
@@ -57,11 +55,11 @@ public class Income {
 		this.id = id;
 	}
 
-	public TypeIncome getType() {
+	public int getType() {
 		return type;
 	}
 
-	public void setType(TypeIncome type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 

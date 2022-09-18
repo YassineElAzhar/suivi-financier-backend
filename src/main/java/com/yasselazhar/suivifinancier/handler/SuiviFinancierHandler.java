@@ -6,10 +6,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 
 import com.yasselazhar.suivifinancier.exception.ResourceNotFoundException;
 import com.yasselazhar.suivifinancier.model.Income;
+import com.yasselazhar.suivifinancier.model.TypeIncome;
 import com.yasselazhar.suivifinancier.repository.IncomeRepository;
+import com.yasselazhar.suivifinancier.repository.TypeIncomeRepository;
 
 @Configuration
 public class SuiviFinancierHandler {
@@ -17,6 +20,9 @@ public class SuiviFinancierHandler {
 
     @Autowired
     IncomeRepository incomeRepository;
+    
+    @Autowired
+    TypeIncomeRepository typeIncomeRepository;
 	
 	public SuiviFinancierHandler() {
 		
@@ -31,12 +37,13 @@ public class SuiviFinancierHandler {
 		List<Income> listIncomes = incomeRepository.findAll();
 		
 		List<HashMap<String,String>> allIncomes = new ArrayList<>();
-		HashMap<String, String> tempIncome = new HashMap<>();
 		
 		for (Income income : listIncomes) {
+			HashMap<String, String> tempIncome = new HashMap<>();
+			
 			tempIncome.clear();
 			tempIncome.put("id", String.valueOf(income.getId()));
-			tempIncome.put("type", income.getType().getType());
+			tempIncome.put("type", String.valueOf(income.getType()));
 			tempIncome.put("provenance", income.getProvenance());
 			tempIncome.put("titre", income.getTitre());
 			tempIncome.put("montant", String.valueOf(income.getMontant()));
@@ -54,17 +61,20 @@ public class SuiviFinancierHandler {
 	 * @return list of all incomes
 	 */
 	public HashMap<String,String> getIncomeById(int incomeId) {
-		Income income = incomeRepository.findById(incomeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Income", "id", incomeId));
-		
 		HashMap<String, String> finalIncome = new HashMap<>();
-		
-		finalIncome.put("id", String.valueOf(income.getId()));
-		finalIncome.put("type", income.getType().getType());
-		finalIncome.put("provenance", income.getProvenance());
-		finalIncome.put("titre", income.getTitre());
-		finalIncome.put("montant", String.valueOf(income.getMontant()));
-		finalIncome.put("dateIncome", income.getDateIncome().toString());
+		try {
+			Income income = incomeRepository.findById(incomeId)
+	                .orElseThrow(() -> new ResourceNotFoundException("Income", "id", incomeId));
+			
+			finalIncome.put("id", String.valueOf(income.getId()));
+			finalIncome.put("type", String.valueOf(income.getType()));
+			finalIncome.put("provenance", income.getProvenance());
+			finalIncome.put("titre", income.getTitre());
+			finalIncome.put("montant", String.valueOf(income.getMontant()));
+			finalIncome.put("dateIncome", income.getDateIncome().toString());
+		} catch (Exception e) {
+			System.out.println("getIncomeById error" + e);
+		}
 			
 		return finalIncome;
 	}
@@ -75,7 +85,19 @@ public class SuiviFinancierHandler {
 	 * @return new Income
 	 */
 	public Income addIncome(Income income) {
-		return incomeRepository.save(income);
+		Income newIncome = new Income();
+		try {
+
+			TypeIncome typeIncome = typeIncomeRepository.findById(income.getType())
+					.orElseThrow(() -> new ResourceNotFoundException("TypeIncome", "id", income.getType()));
+			
+			income.setType(typeIncome.getId());
+			newIncome = incomeRepository.save(income);
+		} catch (Exception e) {
+			System.out.println("addIncome error" + e);
+		}
+		
+		return newIncome;
 	}
 
     /**
@@ -85,14 +107,47 @@ public class SuiviFinancierHandler {
      * @return income udpated
      */
     public Income updateIncome(int incomeId, Income incomeDetails) {
+    	Income updatedIncome = new Income();
+		try {
 
-    	Income income = incomeRepository.findById(incomeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Income", "id", incomeId));
+	    	Income income = incomeRepository.findById(incomeId)
+	                .orElseThrow(() -> new ResourceNotFoundException("Income", "id", incomeId));
+			TypeIncome typeIncome = typeIncomeRepository.findById(incomeDetails.getType())
+					.orElseThrow(() -> new ResourceNotFoundException("TypeIncome", "id", incomeDetails.getType()));
+			
+			
+	    	income.setDupdate(incomeDetails.getDateIncome());
+	    	income.setTitre(incomeDetails.getTitre());
+	    	income.setProvenance(incomeDetails.getProvenance());
+	    	income.setMontant(incomeDetails.getMontant());
+	    	income.setType(typeIncome.getId());
+	    
 
-    	income.setType(incomeDetails.getType());
+	    	updatedIncome = incomeRepository.save(income);
+		} catch (Exception e) {
+			System.out.println("updateIncome error" + e);
+		}
 
-    	Income updatedIncome = incomeRepository.save(income);
         return updatedIncome;
+    }
+    
+
+    
+    
+    public ResponseEntity<?> deleteIncome(int incomeId) {
+    	ResponseEntity<?> re = ResponseEntity.notFound().build();
+    	try {
+
+        	Income income = incomeRepository.findById(incomeId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Income", "id", incomeId));
+        	
+        	incomeRepository.delete(income);
+        	re = ResponseEntity.ok().build();
+		} catch (Exception e) {
+			System.out.println("deleteIncome error" + e);
+		}
+
+        return re;
     }
 	
 }
