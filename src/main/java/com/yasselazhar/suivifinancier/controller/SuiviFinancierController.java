@@ -1,6 +1,7 @@
 package com.yasselazhar.suivifinancier.controller;
 
 import com.yasselazhar.suivifinancier.handler.SuiviFinancierHandler;
+import com.yasselazhar.suivifinancier.model.Expense;
 import com.yasselazhar.suivifinancier.model.Income;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,5 +75,64 @@ public class SuiviFinancierController {
     @DeleteMapping("/incomes/{id}")
     public ResponseEntity<?> deleteIncome(@PathVariable(value = "id") int incomeId) {
     	return suiviFinancierHandler.deleteIncome(incomeId);
+    }
+    
+    
+    /**
+     * Expense
+     */
+    
+    
+    /**
+     * getAllExpenses
+     * 
+     * @return List of all expenses
+     */
+    @GetMapping("/getAllExpenses")
+    public List<HashMap<String,String>> allExpenses() {
+        return suiviFinancierHandler.getAllExpenses();
+    }
+
+    /**
+     * getExpenseById
+     * 
+     * @return List of all expenses
+     */
+    @GetMapping("/getExpenseById/{id}")
+    public HashMap<String,String> expenseById(@PathVariable(value = "id") int expenseId) {
+        return suiviFinancierHandler.getExpenseById(expenseId);
+    }
+    
+
+    /**
+     * addExpense
+     * @param Expense object
+     * @return new expense inserted
+     */
+    @PostMapping("/addExpense")
+    public Expense addExpense(@Valid @RequestBody Expense expense) {
+        return suiviFinancierHandler.addExpense(expense);
+    }
+    
+    
+
+    /**
+     * 
+     * @param expenseId
+     * @param expenseDetails
+     * @return expense udpated
+     */
+    @PutMapping("/expenses/{id}")
+    public Expense updateExpense(@PathVariable(value = "id") int expenseId,
+                                           @Valid @RequestBody Expense expenseDetails) {
+    	return suiviFinancierHandler.updateExpense(expenseId,expenseDetails);
+    }
+    
+    
+
+
+    @DeleteMapping("/expenses/{id}")
+    public ResponseEntity<?> deleteExpense(@PathVariable(value = "id") int expenseId) {
+    	return suiviFinancierHandler.deleteExpense(expenseId);
     }
 }
