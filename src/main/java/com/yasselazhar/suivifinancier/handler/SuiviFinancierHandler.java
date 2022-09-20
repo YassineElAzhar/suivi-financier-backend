@@ -428,12 +428,13 @@ public class SuiviFinancierHandler {
         return re;
     }
     
-    public Map<String, Map<String,String>> getEventsByMonth(String calendarMonth, String calendarYear) {
-    	
-    	Map<String, Map<String,String>> returnedEvents = new HashMap<>();
-    	
-    	
+    
+    
+    public Map<String, List<Map<String,String>>> getEventsByMonth(String calendarMonth, String calendarYear) {
+
+    	Map<String, List<Map<String,String>>> returnedEvents = new HashMap<>();
     	List<Event> eventList = new ArrayList<Event>();
+    	
         
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         String startDate = "01-"+calendarMonth+"-"+calendarYear;
@@ -445,25 +446,42 @@ public class SuiviFinancierHandler {
             Date endDateFormatted = formatter.parse(endDate);
 
             eventList = eventRepository.findByDateEventBetween(startDateFormatted,endDateFormatted);
-            
 
-    		Map<String, String> valuesToReturn = new HashMap<>();
+
             eventList.forEach((Event event) -> {
+        		Map<String, String> valuesToReturn = new HashMap<>();
+
+    			TypeEvent typeEvent = typeEventRepository.findById(event.getType())
+    					.orElseThrow(() -> new ResourceNotFoundException("TypeEvent", "id", event.getType()));
+    			
+    			String dateString = event.getDateEvent().toString().substring(0, 10);
+    			
             	valuesToReturn.clear();
             	valuesToReturn.put("id", String.valueOf(event.getId()));
-            	valuesToReturn.put("type", String.valueOf(event.getType()));
+            	valuesToReturn.put("type", typeEvent.getType());
             	valuesToReturn.put("titre", event.getTitre());
-            	valuesToReturn.put("start_time", event.getStartTime());
-            	valuesToReturn.put("end_time", event.getEndTime());
+            	valuesToReturn.put("start_time", event.getStartTime().substring(0, 5));
+            	valuesToReturn.put("end_time", event.getEndTime().substring(0, 5));
             	
-            	returnedEvents.put(event.getDateEvent().toString(), valuesToReturn);
+            	if(returnedEvents.get(dateString)!= null) {
+            		returnedEvents.get(dateString).add(valuesToReturn);
+            	}else {
+            		Map<Integer,Map<String,String>> newValtemp = new HashMap<>();
+            		newValtemp.put(event.getId(), valuesToReturn);
+            		List<Map<String,String>> tempList = new ArrayList<>();
+            		tempList.add(valuesToReturn);
+            		returnedEvents.put(dateString, tempList);
+            	}
+            	
+
             });
+
             
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        
+
     	return returnedEvents;
     }
     

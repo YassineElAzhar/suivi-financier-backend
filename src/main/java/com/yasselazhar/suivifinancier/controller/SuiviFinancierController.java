@@ -20,7 +20,7 @@ import javax.validation.Valid;
  * Created by Yassine EL-AZHAR
  */
 @RestController
-@RequestMapping("suivi-financier")
+@RequestMapping("/suivi-financier")
 public class SuiviFinancierController {
 
     @Autowired
@@ -170,8 +170,9 @@ public class SuiviFinancierController {
      * @return List of all events
      * @throws ParseException 
      */
+    @CrossOrigin
     @GetMapping("/getEventsByMonth/{calendarMonth}/{calendarYear}")
-    public Map<String, Map<String,String>> eventsByMonth(
+	public Map<String, List<Map<String,String>>> eventsByMonth(
     		@PathVariable(value = "calendarMonth") String calendarMonth,
     		@PathVariable(value = "calendarYear") String calendarYear) {
         return suiviFinancierHandler.getEventsByMonth(calendarMonth,calendarYear);
