@@ -1,6 +1,7 @@
 package com.yasselazhar.suivifinancier.controller;
 
 import com.yasselazhar.suivifinancier.handler.SuiviFinancierHandler;
+import com.yasselazhar.suivifinancier.model.Event;
 import com.yasselazhar.suivifinancier.model.Expense;
 import com.yasselazhar.suivifinancier.model.Income;
 
@@ -8,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -134,5 +137,76 @@ public class SuiviFinancierController {
     @DeleteMapping("/expenses/{id}")
     public ResponseEntity<?> deleteExpense(@PathVariable(value = "id") int expenseId) {
     	return suiviFinancierHandler.deleteExpense(expenseId);
+    }
+    
+    /**
+     * Event
+     */
+    
+    
+    /**
+     * getAllEvents
+     * 
+     * @return List of all events
+     */
+    @GetMapping("/getAllEvents")
+    public List<Event> allEvents() {
+        return suiviFinancierHandler.getAllEvents();
+    }
+
+    /**
+     * getEventById
+     * 
+     * @return List of all events
+     */
+    @GetMapping("/getEventById/{id}")
+    public Event eventById(@PathVariable(value = "id") int eventId) {
+        return suiviFinancierHandler.getEventById(eventId);
+    }
+
+    /**
+     * getEventsByMonth
+     * 
+     * @return List of all events
+     * @throws ParseException 
+     */
+    @GetMapping("/getEventsByMonth/{calendarMonth}/{calendarYear}")
+    public Map<String, Map<String,String>> eventsByMonth(
+    		@PathVariable(value = "calendarMonth") String calendarMonth,
+    		@PathVariable(value = "calendarYear") String calendarYear) {
+        return suiviFinancierHandler.getEventsByMonth(calendarMonth,calendarYear);
+    }
+    
+
+    /**
+     * addEvent
+     * @param Event object
+     * @return new event inserted
+     */
+    @PostMapping("/addEvent")
+    public Event addEvent(@Valid @RequestBody Event event) {
+        return suiviFinancierHandler.addEvent(event);
+    }
+    
+    
+
+    /**
+     * 
+     * @param eventId
+     * @param eventDetails
+     * @return event udpated
+     */
+    @PutMapping("/events/{id}")
+    public Event updateEvent(@PathVariable(value = "id") int eventId,
+                                           @Valid @RequestBody Event eventDetails) {
+        return suiviFinancierHandler.updateEvent(eventId,eventDetails);
+    }
+    
+    
+
+
+    @DeleteMapping("/events/{id}")
+    public ResponseEntity<?> deleteEvent(@PathVariable(value = "id") int eventId) {
+        return suiviFinancierHandler.deleteEvent(eventId);
     }
 }

@@ -1,20 +1,28 @@
 package com.yasselazhar.suivifinancier.handler;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 
 import com.yasselazhar.suivifinancier.exception.ResourceNotFoundException;
+import com.yasselazhar.suivifinancier.model.Event;
 import com.yasselazhar.suivifinancier.model.Expense;
 import com.yasselazhar.suivifinancier.model.Income;
+import com.yasselazhar.suivifinancier.model.TypeEvent;
 import com.yasselazhar.suivifinancier.model.TypeExpense;
 import com.yasselazhar.suivifinancier.model.TypeIncome;
+import com.yasselazhar.suivifinancier.repository.EventRepository;
 import com.yasselazhar.suivifinancier.repository.ExpenseRepository;
 import com.yasselazhar.suivifinancier.repository.IncomeRepository;
+import com.yasselazhar.suivifinancier.repository.TypeEventRepository;
 import com.yasselazhar.suivifinancier.repository.TypeExpenseRepository;
 import com.yasselazhar.suivifinancier.repository.TypeIncomeRepository;
 
@@ -32,6 +40,12 @@ public class SuiviFinancierHandler {
     
     @Autowired
     TypeExpenseRepository typeExpenseRepository;
+	
+    @Autowired
+    EventRepository eventRepository;
+    
+    @Autowired
+    TypeEventRepository typeEventRepository;
     
     
 	
@@ -128,7 +142,7 @@ public class SuiviFinancierHandler {
 					.orElseThrow(() -> new ResourceNotFoundException("TypeIncome", "id", incomeDetails.getType()));
 			
 			
-	    	income.setDupdate(incomeDetails.getDateIncome());
+	    	income.setDateIncome(incomeDetails.getDateIncome());
 	    	income.setTitre(incomeDetails.getTitre());
 	    	income.setProvenance(incomeDetails.getProvenance());
 	    	income.setMontant(incomeDetails.getMontant());
@@ -267,7 +281,7 @@ public class SuiviFinancierHandler {
 					.orElseThrow(() -> new ResourceNotFoundException("TypeExpense", "id", expenseDetails.getType()));
 			
 			
-	    	expense.setDupdate(expenseDetails.getDateExpense());
+	    	expense.setDateExpense(expenseDetails.getDateExpense());
 	    	expense.setTitre(expenseDetails.getTitre());
 	    	expense.setDestinataire(expenseDetails.getDestinataire());
 	    	expense.setMontant(expenseDetails.getMontant());
@@ -305,5 +319,155 @@ public class SuiviFinancierHandler {
 
         return re;
     }
+    
+    
+    
+    /**
+     * getAllEvents
+     * 
+     * @return list of all events
+     */
+    public List<Event> getAllEvents() {
+        List<Event> listEvents = eventRepository.findAll();
+        
+        
+        return listEvents;
+    }
+    
+    /**
+     * getEventById
+     * 
+     * @return list of all events
+     */
+    public Event getEventById(int eventId) {
+        Event event = new Event();
+        try {
+            event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Event", "id", eventId));
+        } catch (Exception e) {
+            System.out.println("getEventById error" + e);
+        }
+            
+        return event;
+    }
+    
+    /**
+     * 
+     * @param event - Event object
+     * @return new Event
+     */
+    public Event addEvent(Event event) {
+        Event newEvent = new Event();
+        try {
+
+            TypeEvent typeEvent = typeEventRepository.findById(event.getType())
+                    .orElseThrow(() -> new ResourceNotFoundException("TypeEvent", "id", event.getType()));
+            
+            event.setType(typeEvent.getId());
+            newEvent = eventRepository.save(event);
+        } catch (Exception e) {
+            System.out.println("addEvent error" + e);
+        }
+        
+        return newEvent;
+    }
+
+    /**
+     * updateEvent
+     * 
+     * @param eventId
+     * @param eventDetails
+     * @return event udpated
+     */
+    public Event updateEvent(int eventId, Event eventDetails) {
+        Event updatedEvent = new Event();
+        try {
+
+            Event event = eventRepository.findById(eventId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Event", "id", eventId));
+            TypeEvent typeEvent = typeEventRepository.findById(eventDetails.getType())
+                    .orElseThrow(() -> new ResourceNotFoundException("TypeEvent", "id", eventDetails.getType()));
+            
+            
+            event.setDateEvent(eventDetails.getDateEvent());
+            event.setTitre(eventDetails.getTitre());
+            event.setStartTime(eventDetails.getStartTime());
+            event.setEndTime(eventDetails.getEndTime());
+            event.setType(typeEvent.getId());
+        
+
+            updatedEvent = eventRepository.save(event);
+        } catch (Exception e) {
+            System.out.println("updateEvent error" + e);
+        }
+
+        return updatedEvent;
+    }
+    
+
+    
+    /**
+     * deleteEvent
+     * 
+     * @param eventId
+     * @return http status
+     */
+    public ResponseEntity<?> deleteEvent(int eventId) {
+        ResponseEntity<?> re = ResponseEntity.notFound().build();
+        try {
+
+            Event event = eventRepository.findById(eventId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Event", "id", eventId));
+            
+            eventRepository.delete(event);
+            re = ResponseEntity.ok().build();
+        } catch (Exception e) {
+            System.out.println("deleteEvent error" + e);
+        }
+
+        return re;
+    }
+    
+    public Map<String, Map<String,String>> getEventsByMonth(String calendarMonth, String calendarYear) {
+    	
+    	Map<String, Map<String,String>> returnedEvents = new HashMap<>();
+    	
+    	
+    	List<Event> eventList = new ArrayList<Event>();
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        String startDate = "01-"+calendarMonth+"-"+calendarYear;
+        String endDate = "31-"+calendarMonth+"-"+calendarYear;
+
+        try {
+
+            Date startDateFormatted = formatter.parse(startDate);
+            Date endDateFormatted = formatter.parse(endDate);
+
+            eventList = eventRepository.findByDateEventBetween(startDateFormatted,endDateFormatted);
+            
+
+    		Map<String, String> valuesToReturn = new HashMap<>();
+            eventList.forEach((Event event) -> {
+            	valuesToReturn.clear();
+            	valuesToReturn.put("id", String.valueOf(event.getId()));
+            	valuesToReturn.put("type", String.valueOf(event.getType()));
+            	valuesToReturn.put("titre", event.getTitre());
+            	valuesToReturn.put("start_time", event.getStartTime());
+            	valuesToReturn.put("end_time", event.getEndTime());
+            	
+            	returnedEvents.put(event.getDateEvent().toString(), valuesToReturn);
+            });
+            
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        
+    	return returnedEvents;
+    }
+    
+    
+    
 	
 }
