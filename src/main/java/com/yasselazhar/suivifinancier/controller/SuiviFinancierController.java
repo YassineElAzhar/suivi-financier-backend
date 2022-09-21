@@ -186,6 +186,7 @@ public class SuiviFinancierController {
      * @param Event object
      * @return new event inserted
      */
+    @CrossOrigin
     @PostMapping("/addEvent")
     public Event addEvent(@Valid @RequestBody Event event) {
         return suiviFinancierHandler.addEvent(event);
@@ -208,7 +209,12 @@ public class SuiviFinancierController {
     
     
 
-
+    /**
+     * 
+     * @param eventId
+     * @return
+     */
+    @CrossOrigin
     @DeleteMapping("/events/{id}")
     public ResponseEntity<?> deleteEvent(@PathVariable(value = "id") int eventId) {
         return suiviFinancierHandler.deleteEvent(eventId);
