@@ -6,6 +6,7 @@ import com.yasselazhar.suivifinancier.model.Expense;
 import com.yasselazhar.suivifinancier.model.Income;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -159,6 +160,7 @@ public class SuiviFinancierController {
      * 
      * @return List of all events
      */
+    @CrossOrigin
     @GetMapping("/getEventById/{id}")
     public Event eventById(@PathVariable(value = "id") int eventId) {
         return suiviFinancierHandler.getEventById(eventId);
@@ -197,6 +199,7 @@ public class SuiviFinancierController {
      * @param eventDetails
      * @return event udpated
      */
+    @CrossOrigin
     @PutMapping("/events/{id}")
     public Event updateEvent(@PathVariable(value = "id") int eventId,
                                            @Valid @RequestBody Event eventDetails) {
