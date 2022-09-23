@@ -497,17 +497,18 @@ public class SuiviFinancierHandler {
      */
     public ResponseEntity<?> deleteEvent(int eventId) {
         ResponseEntity<?> re = ResponseEntity.notFound().build();
+        
         try {
             Event event = eventRepository.findById(eventId)
                     .orElseThrow(() -> new ResourceNotFoundException("Event", "id", eventId));
-            
+                        
             if(event.getIncomeId() != 0) {
                 incomeRepository.deleteById(event.getIncomeId());
-            } else {
+            } else if(event.getExpenseId() != 0)  {
             	expenseRepository.deleteById(event.getExpenseId());
             }
             
-            eventRepository.delete(event);
+            eventRepository.deleteById(eventId);
             re = ResponseEntity.ok().build();
         } catch (Exception e) {
             System.out.println("deleteEvent error" + e);
