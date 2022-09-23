@@ -3,6 +3,7 @@ package com.yasselazhar.suivifinancier.handler;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -572,6 +573,53 @@ public class SuiviFinancierHandler {
         }
 
     	return returnedEvents;
+    }
+    
+    
+    public Map<String, Object> getChartInOutCurrentYear() {
+    	Map<String, Object> chartDataSet = new HashMap<>();
+    	List<String> listChartLabels = new ArrayList<String>();
+    	List<Map<String,Object>> dataset = new ArrayList<>();
+    	Map<String, Object> datasetIncome = new HashMap<>();
+    	Map<String, Object> datasetExpense = new HashMap<>();
+
+    	List<Integer> listIncomes = new ArrayList<>();
+    	List<Integer> listExpenses = new ArrayList<>();
+    	
+
+
+    	Collections.addAll(listIncomes, 100, 105, 120, 100, 120, 106, 92, 105, 120, 98, 100, 165);
+
+    	Collections.addAll(listExpenses, 80, 88, 56, 120, 100, 80, 80, 90, 105, 120, 100, 100);
+
+    	
+    	Collections.addAll(listChartLabels, "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", 
+    			"Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre");
+    	
+    	datasetIncome.put("label", "Revenus");
+    	datasetIncome.put("backgroundColor", "red");
+    	datasetIncome.put("data", listIncomes);
+    	
+    	datasetExpense.put("label", "Dépenses");
+    	datasetExpense.put("backgroundColor", "blue");
+    	datasetExpense.put("data", listExpenses);
+    	
+
+    	Collections.addAll(dataset, datasetIncome, datasetExpense);
+    	
+
+    	chartDataSet.put("chartLabels", listChartLabels);
+    	chartDataSet.put("chartTypeInit", "line");
+    	chartDataSet.put("dataset", dataset);
+    	
+    	
+    	incomeRepository.getChartInOut().forEach(getChartInOutMap -> {
+    		for (Map.Entry<String, Integer> entry : getChartInOutMap.entrySet()) {
+    			System.out.println("Key : " + entry.getKey() + ", Value : " + entry.getValue());
+    		}
+    	});
+         
+    	return chartDataSet;
     }
     
     

@@ -226,4 +226,18 @@ public class SuiviFinancierController {
     public ResponseEntity<?> deleteEvent(@PathVariable(value = "id") int eventId) {
         return suiviFinancierHandler.deleteEvent(eventId);
     }
+    
+    
+    
+    /**
+     * Charts
+     */
+    
+
+    @CrossOrigin
+    @GetMapping("/getChartInOutCurrentYear")
+    public Map<String, Object> getChartInOutCurrentYear() {
+        return suiviFinancierHandler.getChartInOutCurrentYear();
+    }
+    
 }
