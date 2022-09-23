@@ -32,6 +32,7 @@ public class SuiviFinancierController {
      * 
      * @return List of all incomes
      */
+    @CrossOrigin
     @GetMapping("/getAllIncomes")
     public List<HashMap<String,String>> allIncomes() {
         return suiviFinancierHandler.getAllIncomes();
@@ -42,6 +43,7 @@ public class SuiviFinancierController {
      * 
      * @return List of all incomes
      */
+    @CrossOrigin
     @GetMapping("/getIncomeById/{id}")
     public HashMap<String,String> incomeById(@PathVariable(value = "id") int incomeId) {
         return suiviFinancierHandler.getIncomeById(incomeId);
@@ -53,28 +55,28 @@ public class SuiviFinancierController {
      * @param Income object
      * @return new income inserted
      */
+    @CrossOrigin
     @PostMapping("/addIncome")
     public Income addIncome(@Valid @RequestBody Income income) {
         return suiviFinancierHandler.addIncome(income);
     }
     
     
-
     /**
      * 
      * @param incomeId
      * @param incomeDetails
      * @return income udpated
      */
+    @CrossOrigin
     @PutMapping("/incomes/{id}")
     public Income updateIncome(@PathVariable(value = "id") int incomeId,
                                            @Valid @RequestBody Income incomeDetails) {
     	return suiviFinancierHandler.updateIncome(incomeId,incomeDetails);
     }
     
-    
 
-
+    @CrossOrigin
     @DeleteMapping("/incomes/{id}")
     public ResponseEntity<?> deleteIncome(@PathVariable(value = "id") int incomeId) {
     	return suiviFinancierHandler.deleteIncome(incomeId);
@@ -138,6 +140,7 @@ public class SuiviFinancierController {
     
 
 
+    @CrossOrigin
     @DeleteMapping("/expenses/{id}")
     public ResponseEntity<?> deleteExpense(@PathVariable(value = "id") int expenseId) {
     	return suiviFinancierHandler.deleteExpense(expenseId);
