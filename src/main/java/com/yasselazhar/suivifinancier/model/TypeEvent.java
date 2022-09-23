@@ -29,6 +29,8 @@ public class TypeEvent {
 
     private int isIncome;
 
+    private int isEvent;
+
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -72,6 +74,14 @@ public class TypeEvent {
         this.isIncome = isIncome;
     }
 
+    public int getIsEvent() {
+        return isEvent;
+    }
+
+    public void setIsEvent(int isEvent) {
+        this.isEvent = isEvent;
+    }
+
     public Date getDinsert() {
         return dinsert;
     }
@@ -88,10 +98,11 @@ public class TypeEvent {
         this.dupdate = dupdate;
     }
 
+    
 	@Override
 	public String toString() {
 		return "TypeEvent [id=" + id + ", type=" + type + ", isExpense=" + isExpense + ", isIncome=" + isIncome
-				+ ", dinsert=" + dinsert + ", dupdate=" + dupdate + "]";
+				+ ", isEvent=" + isEvent + ", dinsert=" + dinsert + ", dupdate=" + dupdate + "]";
 	}
-
+    
 }

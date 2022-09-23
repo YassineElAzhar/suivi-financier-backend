@@ -35,6 +35,10 @@ public class Event {
 
     @NotBlank
     private String endTime;
+    
+    private int expenseId;
+    
+    private int incomeId;
 
 
     @Column(nullable = false, updatable = false)
@@ -95,6 +99,22 @@ public class Event {
 		this.endTime = endTime;
 	}
 
+	public int getExpenseId() {
+		return expenseId;
+	}
+
+	public void setExpenseId(int expenseId) {
+		this.expenseId = expenseId;
+	}
+
+	public int getIncomeId() {
+		return incomeId;
+	}
+
+	public void setIncomeId(int incomeId) {
+		this.incomeId = incomeId;
+	}
+
 	public Date getDinsert() {
 		return dinsert;
 	}
@@ -114,10 +134,9 @@ public class Event {
 	@Override
 	public String toString() {
 		return "Event [id=" + id + ", type=" + type + ", titre=" + titre + ", dateEvent=" + dateEvent + ", startTime="
-				+ startTime + ", endTime=" + endTime + ", dinsert=" + dinsert + ", dupdate=" + dupdate + "]";
+				+ startTime + ", endTime=" + endTime + ", expenseId=" + expenseId + ", incomeId=" + incomeId
+				+ ", dinsert=" + dinsert + ", dupdate=" + dupdate + "]";
 	}
-
 	
-    
-
+	
 }

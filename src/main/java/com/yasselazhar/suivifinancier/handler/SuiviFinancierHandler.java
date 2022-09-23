@@ -112,11 +112,22 @@ public class SuiviFinancierHandler {
 	 */
 	public Income addIncome(Income income) {
 		Income newIncome = new Income();
+		Event eventToAdd = new Event();
 		try {
 			TypeEvent typeEvent = typeEventRepository.findByIsIncomeAndId(1,income.getType());
 			
 			income.setType(typeEvent.getId());
 			newIncome = incomeRepository.save(income);
+			
+			//Nous ajoutons un nouvel event
+			eventToAdd.setType(newIncome.getType());
+			eventToAdd.setTitre(newIncome.getTitre());
+			eventToAdd.setDateEvent(newIncome.getDateIncome());
+			eventToAdd.setIncomeId(newIncome.getId());
+			eventToAdd.setExpenseId(0);
+			eventToAdd.setStartTime("00:00:00");
+			eventToAdd.setEndTime("00:00:00");
+			eventRepository.save(eventToAdd);
 		} catch (Exception e) {
 			System.out.println("addIncome error" + e);
 		}
@@ -147,6 +158,14 @@ public class SuiviFinancierHandler {
 	    	income.setType(typeEvent.getId());
 
 	    	updatedIncome = incomeRepository.save(income);
+	    	
+	    	//Nous mettons à jour l'event
+	    	Event event = eventRepository.findByIncomeId(incomeId);
+	    	event.setTitre(income.getTitre());
+	    	event.setType(typeEvent.getId());
+	    	event.setDateEvent(income.getDateIncome());
+	    	eventRepository.save(event);
+	    	
 		} catch (Exception e) {
 			System.out.println("updateIncome error" + e);
 		}
@@ -169,6 +188,11 @@ public class SuiviFinancierHandler {
                     .orElseThrow(() -> new ResourceNotFoundException("Income", "id", incomeId));
         	
         	incomeRepository.delete(income);
+        	
+        	//Nous supprimons l'event
+        	Event event = eventRepository.findByIncomeId(incomeId);
+        	eventRepository.delete(event);
+        	
         	re = ResponseEntity.ok().build();
 		} catch (Exception e) {
 			System.out.println("deleteIncome error" + e);
@@ -248,11 +272,23 @@ public class SuiviFinancierHandler {
 	 */
 	public Expense addExpense(Expense expense) {
 		Expense newExpense = new Expense();
+		Event eventToAdd = new Event();
 		try {
 			TypeEvent typeEvent = typeEventRepository.findByIsExpenseAndId(1,expense.getType());
 			
 			expense.setType(typeEvent.getId());
 			newExpense = expenseRepository.save(expense);
+			
+			//Nous ajoutons un nouvel event
+			eventToAdd.setType(newExpense.getType());
+			eventToAdd.setTitre(newExpense.getTitre());
+			eventToAdd.setDateEvent(newExpense.getDateExpense());
+			eventToAdd.setExpenseId(newExpense.getId());
+			eventToAdd.setIncomeId(0);
+			eventToAdd.setStartTime("00:00:00");
+			eventToAdd.setEndTime("00:00:00");
+			eventRepository.save(eventToAdd);
+			
 		} catch (Exception e) {
 			System.out.println("addExpense error" + e);
 		}
@@ -284,6 +320,14 @@ public class SuiviFinancierHandler {
 	    
 
 	    	updatedExpense = expenseRepository.save(expense);
+	    	
+	    	//Nous mettons à jour l'event
+	    	Event event = eventRepository.findByExpenseId(expenseId);
+	    	event.setTitre(expense.getTitre());
+	    	event.setType(typeEvent.getId());
+	    	event.setDateEvent(expense.getDateExpense());
+	    	eventRepository.save(event);
+	    	
 		} catch (Exception e) {
 			System.out.println("updateExpense error" + e);
 		}
@@ -306,6 +350,11 @@ public class SuiviFinancierHandler {
                     .orElseThrow(() -> new ResourceNotFoundException("Expense", "id", expenseId));
         	
         	expenseRepository.delete(expense);
+        	
+        	//Nous supprimons l'event
+        	Event event = eventRepository.findByExpenseId(expenseId);
+        	eventRepository.delete(event);
+        	
         	re = ResponseEntity.ok().build();
 		} catch (Exception e) {
 			System.out.println("deleteExpense error" + e);
@@ -358,6 +407,29 @@ public class SuiviFinancierHandler {
                     .orElseThrow(() -> new ResourceNotFoundException("TypeEvent", "id", event.getType()));
             
             event.setType(typeEvent.getId());
+            
+            //On ajoute une expense
+            if((typeEvent.getIsExpense() == 1) && (typeEvent.getIsIncome() == 0)) {
+                Expense expense = new Expense();
+                expense.setTitre(event.getTitre());
+                expense.setType(event.getType());
+                expense.setDateExpense(event.getDateEvent());
+                expense.setDestinataire("Ajout automatique");
+                expense.setMontant(0);
+                Expense newExpense = expenseRepository.save(expense);
+                event.setExpenseId(newExpense.getId());
+            } else if((typeEvent.getIsExpense() == 0) && (typeEvent.getIsIncome() == 1)) {
+                Income income = new Income();
+                income.setTitre(event.getTitre());
+                income.setType(event.getType());
+                income.setDateIncome(event.getDateEvent());
+                income.setProvenance("Ajout automatique");
+                income.setMontant(0);
+                incomeRepository.save(income);
+                Income newIncome = incomeRepository.save(income);
+                event.setIncomeId(newIncome.getId());
+            }
+            
             newEvent = eventRepository.save(event);
         } catch (Exception e) {
             System.out.println("addEvent error" + e);
@@ -387,8 +459,26 @@ public class SuiviFinancierHandler {
             event.setStartTime(eventDetails.getStartTime());
             event.setEndTime(eventDetails.getEndTime());
             event.setType(typeEvent.getId());
+            
+            if(event.getIncomeId() != 0) {
+            	Income income = incomeRepository.findById(event.getIncomeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Income", "id", event.getIncomeId()));
+            	
+            	income.setDateIncome(eventDetails.getDateEvent());
+            	income.setTitre(eventDetails.getTitre());
+            	income.setType(event.getType());
+                incomeRepository.save(income);
+            } else if(event.getExpenseId() != 0)  {
+            	Expense expense = expenseRepository.findById(event.getExpenseId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Expense", "id", event.getExpenseId()));
+            	
+            	expense.setDateExpense(eventDetails.getDateEvent());
+            	expense.setTitre(eventDetails.getTitre());
+            	expense.setType(event.getType());
+            	expenseRepository.save(expense);
+            }
         
-
+			
             updatedEvent = eventRepository.save(event);
         } catch (Exception e) {
             System.out.println("updateEvent error" + e);
@@ -410,6 +500,12 @@ public class SuiviFinancierHandler {
         try {
             Event event = eventRepository.findById(eventId)
                     .orElseThrow(() -> new ResourceNotFoundException("Event", "id", eventId));
+            
+            if(event.getIncomeId() != 0) {
+                incomeRepository.deleteById(event.getIncomeId());
+            } else {
+            	expenseRepository.deleteById(event.getExpenseId());
+            }
             
             eventRepository.delete(event);
             re = ResponseEntity.ok().build();
