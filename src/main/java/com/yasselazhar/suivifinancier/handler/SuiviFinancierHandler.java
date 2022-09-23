@@ -17,8 +17,6 @@ import com.yasselazhar.suivifinancier.model.Event;
 import com.yasselazhar.suivifinancier.model.Expense;
 import com.yasselazhar.suivifinancier.model.Income;
 import com.yasselazhar.suivifinancier.model.TypeEvent;
-import com.yasselazhar.suivifinancier.model.TypeExpense;
-import com.yasselazhar.suivifinancier.model.TypeIncome;
 import com.yasselazhar.suivifinancier.repository.EventRepository;
 import com.yasselazhar.suivifinancier.repository.ExpenseRepository;
 import com.yasselazhar.suivifinancier.repository.IncomeRepository;
@@ -66,13 +64,12 @@ public class SuiviFinancierHandler {
 		for (Income income : listIncomes) {
 			HashMap<String, String> tempIncome = new HashMap<>();
 
-			TypeIncome typeIncome = typeIncomeRepository.findById(income.getType())
-	                .orElseThrow(() -> new ResourceNotFoundException("TypeIncome", "id", income.getType()));
+			TypeEvent typeEvent = typeEventRepository.findByIsIncomeAndId(1,income.getType());
 			
 			tempIncome.clear();
 			tempIncome.put("id", String.valueOf(income.getId()));
 			//tempIncome.put("type", String.valueOf(income.getType()));
-			tempIncome.put("type", String.valueOf(typeIncome.getType()));
+			tempIncome.put("type", String.valueOf(typeEvent.getType()));
 			tempIncome.put("provenance", income.getProvenance());
 			tempIncome.put("titre", income.getTitre());
 			tempIncome.put("montant", String.valueOf(income.getMontant()));
@@ -116,11 +113,9 @@ public class SuiviFinancierHandler {
 	public Income addIncome(Income income) {
 		Income newIncome = new Income();
 		try {
-
-			TypeIncome typeIncome = typeIncomeRepository.findById(income.getType())
-					.orElseThrow(() -> new ResourceNotFoundException("TypeIncome", "id", income.getType()));
+			TypeEvent typeEvent = typeEventRepository.findByIsIncomeAndId(1,income.getType());
 			
-			income.setType(typeIncome.getId());
+			income.setType(typeEvent.getId());
 			newIncome = incomeRepository.save(income);
 		} catch (Exception e) {
 			System.out.println("addIncome error" + e);
@@ -139,19 +134,17 @@ public class SuiviFinancierHandler {
     public Income updateIncome(int incomeId, Income incomeDetails) {
     	Income updatedIncome = new Income();
 		try {
-
 	    	Income income = incomeRepository.findById(incomeId)
 	                .orElseThrow(() -> new ResourceNotFoundException("Income", "id", incomeId));
-			TypeIncome typeIncome = typeIncomeRepository.findById(incomeDetails.getType())
-					.orElseThrow(() -> new ResourceNotFoundException("TypeIncome", "id", incomeDetails.getType()));
+			
+			TypeEvent typeEvent = typeEventRepository.findByIsIncomeAndId(1,incomeDetails.getType());
 			
 			
 	    	income.setDateIncome(incomeDetails.getDateIncome());
 	    	income.setTitre(incomeDetails.getTitre());
 	    	income.setProvenance(incomeDetails.getProvenance());
 	    	income.setMontant(incomeDetails.getMontant());
-	    	income.setType(typeIncome.getId());
-	    
+	    	income.setType(typeEvent.getId());
 
 	    	updatedIncome = incomeRepository.save(income);
 		} catch (Exception e) {
@@ -172,7 +165,6 @@ public class SuiviFinancierHandler {
     public ResponseEntity<?> deleteIncome(int incomeId) {
     	ResponseEntity<?> re = ResponseEntity.notFound().build();
     	try {
-
         	Income income = incomeRepository.findById(incomeId)
                     .orElseThrow(() -> new ResourceNotFoundException("Income", "id", incomeId));
         	
@@ -208,14 +200,12 @@ public class SuiviFinancierHandler {
 		
 		for (Expense expense : listExpenses) {
 			HashMap<String, String> tempExpense = new HashMap<>();
-
-			TypeExpense typeExpense = typeExpenseRepository.findById(expense.getType())
-	                .orElseThrow(() -> new ResourceNotFoundException("TypeExpense", "id", expense.getType()));
+			
+			TypeEvent typeEvent = typeEventRepository.findByIsExpenseAndId(1,expense.getType());
 			
 			tempExpense.clear();
 			tempExpense.put("id", String.valueOf(expense.getId()));
-			//tempExpense.put("type", String.valueOf(expense.getType()));
-			tempExpense.put("type", String.valueOf(typeExpense.getType()));
+			tempExpense.put("type", String.valueOf(typeEvent.getType()));
 			tempExpense.put("destinataire", expense.getDestinataire());
 			tempExpense.put("titre", expense.getTitre());
 			tempExpense.put("montant", String.valueOf(expense.getMontant()));
@@ -259,11 +249,9 @@ public class SuiviFinancierHandler {
 	public Expense addExpense(Expense expense) {
 		Expense newExpense = new Expense();
 		try {
-
-			TypeExpense typeExpense = typeExpenseRepository.findById(expense.getType())
-					.orElseThrow(() -> new ResourceNotFoundException("TypeExpense", "id", expense.getType()));
+			TypeEvent typeEvent = typeEventRepository.findByIsExpenseAndId(1,expense.getType());
 			
-			expense.setType(typeExpense.getId());
+			expense.setType(typeEvent.getId());
 			newExpense = expenseRepository.save(expense);
 		} catch (Exception e) {
 			System.out.println("addExpense error" + e);
@@ -282,18 +270,17 @@ public class SuiviFinancierHandler {
     public Expense updateExpense(int expenseId, Expense expenseDetails) {
     	Expense updatedExpense = new Expense();
 		try {
-
 	    	Expense expense = expenseRepository.findById(expenseId)
 	                .orElseThrow(() -> new ResourceNotFoundException("Expense", "id", expenseId));
-			TypeExpense typeExpense = typeExpenseRepository.findById(expenseDetails.getType())
-					.orElseThrow(() -> new ResourceNotFoundException("TypeExpense", "id", expenseDetails.getType()));
+
+			TypeEvent typeEvent = typeEventRepository.findByIsExpenseAndId(1,expenseDetails.getType());
 			
 			
 	    	expense.setDateExpense(expenseDetails.getDateExpense());
 	    	expense.setTitre(expenseDetails.getTitre());
 	    	expense.setDestinataire(expenseDetails.getDestinataire());
 	    	expense.setMontant(expenseDetails.getMontant());
-	    	expense.setType(typeExpense.getId());
+	    	expense.setType(typeEvent.getId());
 	    
 
 	    	updatedExpense = expenseRepository.save(expense);
@@ -315,7 +302,6 @@ public class SuiviFinancierHandler {
     public ResponseEntity<?> deleteExpense(int expenseId) {
     	ResponseEntity<?> re = ResponseEntity.notFound().build();
     	try {
-
         	Expense expense = expenseRepository.findById(expenseId)
                     .orElseThrow(() -> new ResourceNotFoundException("Expense", "id", expenseId));
         	
@@ -396,7 +382,6 @@ public class SuiviFinancierHandler {
             TypeEvent typeEvent = typeEventRepository.findById(eventDetails.getType())
                     .orElseThrow(() -> new ResourceNotFoundException("TypeEvent", "id", eventDetails.getType()));
             
-            
             event.setDateEvent(eventDetails.getDateEvent());
             event.setTitre(eventDetails.getTitre());
             event.setStartTime(eventDetails.getStartTime());
@@ -423,7 +408,6 @@ public class SuiviFinancierHandler {
     public ResponseEntity<?> deleteEvent(int eventId) {
         ResponseEntity<?> re = ResponseEntity.notFound().build();
         try {
-
             Event event = eventRepository.findById(eventId)
                     .orElseThrow(() -> new ResourceNotFoundException("Event", "id", eventId));
             
