@@ -156,6 +156,7 @@ public class SuiviFinancierController {
      * 
      * @return List of all events
      */
+    @CrossOrigin
     @GetMapping("/getAllEvents")
     public List<Event> allEvents() {
         return suiviFinancierHandler.getAllEvents();

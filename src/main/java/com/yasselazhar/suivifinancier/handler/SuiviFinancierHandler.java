@@ -65,14 +65,18 @@ public class SuiviFinancierHandler {
 		
 		for (Income income : listIncomes) {
 			HashMap<String, String> tempIncome = new HashMap<>();
+
+			TypeIncome typeIncome = typeIncomeRepository.findById(income.getType())
+	                .orElseThrow(() -> new ResourceNotFoundException("TypeIncome", "id", income.getType()));
 			
 			tempIncome.clear();
 			tempIncome.put("id", String.valueOf(income.getId()));
-			tempIncome.put("type", String.valueOf(income.getType()));
+			//tempIncome.put("type", String.valueOf(income.getType()));
+			tempIncome.put("type", String.valueOf(typeIncome.getType()));
 			tempIncome.put("provenance", income.getProvenance());
 			tempIncome.put("titre", income.getTitre());
 			tempIncome.put("montant", String.valueOf(income.getMontant()));
-			tempIncome.put("dateIncome", income.getDateIncome().toString());
+			tempIncome.put("dateIncome", income.getDateIncome().toString().substring(0, 10));
 			
 			allIncomes.add(tempIncome);
 			
@@ -96,7 +100,7 @@ public class SuiviFinancierHandler {
 			finalIncome.put("provenance", income.getProvenance());
 			finalIncome.put("titre", income.getTitre());
 			finalIncome.put("montant", String.valueOf(income.getMontant()));
-			finalIncome.put("dateIncome", income.getDateIncome().toString());
+			finalIncome.put("dateIncome", income.getDateIncome().toString().substring(0, 10));
 		} catch (Exception e) {
 			System.out.println("getIncomeById error" + e);
 		}
