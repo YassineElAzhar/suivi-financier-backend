@@ -204,14 +204,18 @@ public class SuiviFinancierHandler {
 		
 		for (Expense expense : listExpenses) {
 			HashMap<String, String> tempExpense = new HashMap<>();
+
+			TypeExpense typeExpense = typeExpenseRepository.findById(expense.getType())
+	                .orElseThrow(() -> new ResourceNotFoundException("TypeExpense", "id", expense.getType()));
 			
 			tempExpense.clear();
 			tempExpense.put("id", String.valueOf(expense.getId()));
-			tempExpense.put("type", String.valueOf(expense.getType()));
-			tempExpense.put("provenance", expense.getDestinataire());
+			//tempExpense.put("type", String.valueOf(expense.getType()));
+			tempExpense.put("type", String.valueOf(typeExpense.getType()));
+			tempExpense.put("destinataire", expense.getDestinataire());
 			tempExpense.put("titre", expense.getTitre());
 			tempExpense.put("montant", String.valueOf(expense.getMontant()));
-			tempExpense.put("dateExpense", expense.getDateExpense().toString());
+			tempExpense.put("dateExpense", expense.getDateExpense().toString().substring(0, 10));
 			
 			allExpenses.add(tempExpense);
 			
@@ -232,10 +236,10 @@ public class SuiviFinancierHandler {
 			
 			finalExpense.put("id", String.valueOf(expense.getId()));
 			finalExpense.put("type", String.valueOf(expense.getType()));
-			finalExpense.put("provenance", expense.getDestinataire());
+			finalExpense.put("destinataire", expense.getDestinataire());
 			finalExpense.put("titre", expense.getTitre());
 			finalExpense.put("montant", String.valueOf(expense.getMontant()));
-			finalExpense.put("dateExpense", expense.getDateExpense().toString());
+			finalExpense.put("dateExpense", expense.getDateExpense().toString().substring(0, 10));
 		} catch (Exception e) {
 			System.out.println("getExpenseById error" + e);
 		}

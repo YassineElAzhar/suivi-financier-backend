@@ -6,7 +6,6 @@ import com.yasselazhar.suivifinancier.model.Expense;
 import com.yasselazhar.suivifinancier.model.Income;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,6 +91,7 @@ public class SuiviFinancierController {
      * 
      * @return List of all expenses
      */
+    @CrossOrigin
     @GetMapping("/getAllExpenses")
     public List<HashMap<String,String>> allExpenses() {
         return suiviFinancierHandler.getAllExpenses();
@@ -102,6 +102,7 @@ public class SuiviFinancierController {
      * 
      * @return List of all expenses
      */
+    @CrossOrigin
     @GetMapping("/getExpenseById/{id}")
     public HashMap<String,String> expenseById(@PathVariable(value = "id") int expenseId) {
         return suiviFinancierHandler.getExpenseById(expenseId);
@@ -113,6 +114,7 @@ public class SuiviFinancierController {
      * @param Expense object
      * @return new expense inserted
      */
+    @CrossOrigin
     @PostMapping("/addExpense")
     public Expense addExpense(@Valid @RequestBody Expense expense) {
         return suiviFinancierHandler.addExpense(expense);
@@ -126,6 +128,7 @@ public class SuiviFinancierController {
      * @param expenseDetails
      * @return expense udpated
      */
+    @CrossOrigin
     @PutMapping("/expenses/{id}")
     public Expense updateExpense(@PathVariable(value = "id") int expenseId,
                                            @Valid @RequestBody Expense expenseDetails) {
