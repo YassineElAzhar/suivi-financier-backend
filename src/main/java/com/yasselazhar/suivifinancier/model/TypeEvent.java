@@ -13,17 +13,23 @@ import java.util.Date;
  * Created by Yassine EL-AZHAR
  */
 @Entity
-@Table(name = "type_income")
+@Table(name = "type_event")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"dinsert", "dupdate"},
         allowGetters = true)
-public class TypeIncome {
+public class TypeEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NotBlank
     private String type;
+
+    private int isExpense;
+
+    private int isIncome;
+
+    private int isEvent;
 
 
     @Column(nullable = false, updatable = false)
@@ -52,6 +58,30 @@ public class TypeIncome {
         this.type = type;
     }
 
+    public int getIsExpense() {
+        return isExpense;
+    }
+
+    public void setIsExpense(int isExpense) {
+        this.isExpense = isExpense;
+    }
+
+    public int getIsIncome() {
+        return isIncome;
+    }
+
+    public void setIsIncome(int isIncome) {
+        this.isIncome = isIncome;
+    }
+
+    public int getIsEvent() {
+        return isEvent;
+    }
+
+    public void setIsEvent(int isEvent) {
+        this.isEvent = isEvent;
+    }
+
     public Date getDinsert() {
         return dinsert;
     }
@@ -68,4 +98,11 @@ public class TypeIncome {
         this.dupdate = dupdate;
     }
 
+    
+	@Override
+	public String toString() {
+		return "TypeEvent [id=" + id + ", type=" + type + ", isExpense=" + isExpense + ", isIncome=" + isIncome
+				+ ", isEvent=" + isEvent + ", dinsert=" + dinsert + ", dupdate=" + dupdate + "]";
+	}
+    
 }

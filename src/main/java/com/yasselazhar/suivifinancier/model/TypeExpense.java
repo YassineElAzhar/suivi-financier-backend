@@ -13,11 +13,11 @@ import java.util.Date;
  * Created by Yassine EL-AZHAR
  */
 @Entity
-@Table(name = "type_income")
+@Table(name = "type_expense")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"dinsert", "dupdate"},
         allowGetters = true)
-public class TypeIncome {
+public class TypeExpense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

@@ -11,6 +11,6 @@ public class IndexController {
 
     @GetMapping
     public String hello() {
-        return "Backend de suivi-finiancier. l'api se trouve sous /suivi-financier/.";
+        return "Branche de dev - Backend de suivi-finiancier. l'api se trouve sous /suivi-financier/.";
     }
 }
