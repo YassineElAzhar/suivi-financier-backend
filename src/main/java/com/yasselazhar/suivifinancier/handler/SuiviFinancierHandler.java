@@ -3,6 +3,7 @@ package com.yasselazhar.suivifinancier.handler;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import com.yasselazhar.suivifinancier.model.Event;
 import com.yasselazhar.suivifinancier.model.Expense;
 import com.yasselazhar.suivifinancier.model.Income;
 import com.yasselazhar.suivifinancier.model.TypeEvent;
+import com.yasselazhar.suivifinancier.repository.ChartRepository;
 import com.yasselazhar.suivifinancier.repository.EventRepository;
 import com.yasselazhar.suivifinancier.repository.ExpenseRepository;
 import com.yasselazhar.suivifinancier.repository.IncomeRepository;
@@ -45,6 +47,11 @@ public class SuiviFinancierHandler {
     
     @Autowired
     TypeEventRepository typeEventRepository;
+
+    @Autowired
+    ChartRepository chartRepository;
+    
+    
     
     
 	
@@ -583,28 +590,87 @@ public class SuiviFinancierHandler {
     	Map<String, Object> datasetIncome = new HashMap<>();
     	Map<String, Object> datasetExpense = new HashMap<>();
 
+    	//Données de test
+    	/*
     	List<Integer> listIncomes = new ArrayList<>();
     	List<Integer> listExpenses = new ArrayList<>();
-    	
-
 
     	Collections.addAll(listIncomes, 100, 105, 120, 100, 120, 106, 92, 105, 120, 98, 100, 165);
-
     	Collections.addAll(listExpenses, 80, 88, 56, 120, 100, 80, 80, 90, 105, 120, 100, 100);
-
+		*/
     	
     	Collections.addAll(listChartLabels, "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", 
     			"Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre");
     	
+    	
+    	/**
+    	 * Incomes
+    	 */
+    	//Nous récupérons les incomes depuis la base de données
+    	Map<Integer, Integer> mapIncomesToAdd = new HashMap<>();
+    	chartRepository.getChartInOutIncomesCurrentYear().forEach(getChartInOutMap -> {
+    	    try {
+    	    	//Nous traitons la date pour récupérer le mois
+				Date dateToConvert=new SimpleDateFormat("yyyy-MM").parse(getChartInOutMap.getYearMonth());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(dateToConvert);
+				int month = cal.get(Calendar.MONTH);
+				//On feed une map temporaire
+				mapIncomesToAdd.put(month+1, getChartInOutMap.getSommeMontant());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+    	});
+    	//Nous passons les mois vide à 0
+    	for (int cpt = 1; cpt <= 12; cpt++) {
+    		if (!mapIncomesToAdd.containsKey(cpt)) {
+        		mapIncomesToAdd.put(cpt, 0);
+        	}
+		}
+    	//Nous transformons la map en list
+    	List<Integer> listIncomeDataSet = new ArrayList<Integer>(mapIncomesToAdd.values());
+
+
+    	/**
+    	 * Expenses
+    	 */
+    	//Nous récupérons les expenses depuis la base de données
+    	Map<Integer, Integer> mapExpensesToAdd = new HashMap<>();
+    	chartRepository.getChartInOutExpensesCurrentYear().forEach(getChartInOutMap -> {
+    	    try {
+    	    	//Nous traitons la date pour récupérer le mois
+				Date dateToConvert=new SimpleDateFormat("yyyy-MM").parse(getChartInOutMap.getYearMonth());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(dateToConvert);
+				int month = cal.get(Calendar.MONTH);
+				//On feed une map temporaire
+				mapExpensesToAdd.put(month+1, getChartInOutMap.getSommeMontant());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+    	});
+    	//Nous passons les mois vide à 0
+    	for (int cpt = 1; cpt <= 12; cpt++) {
+    		if (!mapExpensesToAdd.containsKey(cpt)) {
+    			mapExpensesToAdd.put(cpt, 0);
+        	}
+		}
+    	//Nous transformons la map en list
+    	List<Integer> listExpenseDataSet = new ArrayList<Integer>(mapExpensesToAdd.values());
+
+	    
+	    
     	datasetIncome.put("label", "Revenus");
     	datasetIncome.put("backgroundColor", "red");
-    	datasetIncome.put("data", listIncomes);
+    	//datasetIncome.put("data", listIncomes);
+    	datasetIncome.put("data", listIncomeDataSet);
     	
     	datasetExpense.put("label", "Dépenses");
     	datasetExpense.put("backgroundColor", "blue");
-    	datasetExpense.put("data", listExpenses);
+    	//datasetExpense.put("data", listExpenses);
+    	datasetExpense.put("data", listExpenseDataSet);
     	
-
+    	//Nous alimentons notre dataset avec les incomes et expenses
     	Collections.addAll(dataset, datasetIncome, datasetExpense);
     	
 
@@ -613,12 +679,6 @@ public class SuiviFinancierHandler {
     	chartDataSet.put("dataset", dataset);
     	
     	
-    	incomeRepository.getChartInOut().forEach(getChartInOutMap -> {
-    		for (Map.Entry<String, Integer> entry : getChartInOutMap.entrySet()) {
-    			System.out.println("Key : " + entry.getKey() + ", Value : " + entry.getValue());
-    		}
-    	});
-         
     	return chartDataSet;
     }
     
