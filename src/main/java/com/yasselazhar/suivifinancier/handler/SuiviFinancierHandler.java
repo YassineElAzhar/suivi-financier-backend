@@ -589,15 +589,6 @@ public class SuiviFinancierHandler {
     	List<Map<String,Object>> dataset = new ArrayList<>();
     	Map<String, Object> datasetIncome = new HashMap<>();
     	Map<String, Object> datasetExpense = new HashMap<>();
-
-    	//Données de test
-    	/*
-    	List<Integer> listIncomes = new ArrayList<>();
-    	List<Integer> listExpenses = new ArrayList<>();
-
-    	Collections.addAll(listIncomes, 100, 105, 120, 100, 120, 106, 92, 105, 120, 98, 100, 165);
-    	Collections.addAll(listExpenses, 80, 88, 56, 120, 100, 80, 80, 90, 105, 120, 100, 100);
-		*/
     	
     	Collections.addAll(listChartLabels, "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", 
     			"Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre");
@@ -662,12 +653,10 @@ public class SuiviFinancierHandler {
 	    
     	datasetIncome.put("label", "Revenus");
     	datasetIncome.put("backgroundColor", "red");
-    	//datasetIncome.put("data", listIncomes);
     	datasetIncome.put("data", listIncomeDataSet);
     	
     	datasetExpense.put("label", "Dépenses");
     	datasetExpense.put("backgroundColor", "blue");
-    	//datasetExpense.put("data", listExpenses);
     	datasetExpense.put("data", listExpenseDataSet);
     	
     	//Nous alimentons notre dataset avec les incomes et expenses
