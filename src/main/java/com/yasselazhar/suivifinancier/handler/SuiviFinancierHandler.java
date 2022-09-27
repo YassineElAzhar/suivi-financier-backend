@@ -2,6 +2,8 @@ package com.yasselazhar.suivifinancier.handler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -671,6 +673,33 @@ public class SuiviFinancierHandler {
     	return chartDataSet;
     }
     
+    
+    
+    public Map<String, Object> getChartOutCurrentMonth(){
+    	Map<String, Object> chartDataSet = new HashMap<>();
+    	List<String> chartLabels = new ArrayList<String>();
+    	List<Map<String,Object>> dataset = new ArrayList<>();
+    	Map<String,Object> data = new HashMap<>();
+    	List<Integer> dataList = new ArrayList<>();
+    	
+
+        LocalDate currentdate = LocalDate.now();
+    	Month currentMonth = currentdate.getMonth();
+        int currentYear = currentdate.getYear();
+    	
+    	data.put("label", "Expense " + currentMonth.toString() + " " + String.valueOf(currentYear));
+    	chartRepository.getChartOutCurrentYear().forEach(getChartOutMap -> {
+    		chartLabels.add(getChartOutMap.getTypeEvent());
+    		dataList.add(getChartOutMap.getSommeMontant());
+    	});
+    	data.put("data", dataList);
+    	dataset.add(data);
+
+    	chartDataSet.put("chartLabels", chartLabels);
+    	chartDataSet.put("chartTypeInit", "pie");
+    	chartDataSet.put("dataset", dataset);
+    	return chartDataSet;
+    }
     
     
 	

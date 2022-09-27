@@ -240,4 +240,11 @@ public class SuiviFinancierController {
         return suiviFinancierHandler.getChartInOutCurrentYear();
     }
     
+    
+    @CrossOrigin
+    @GetMapping("/getChartOutCurrentMonth")
+    public Map<String, Object> getChartOutCurrentMonth() {
+        return suiviFinancierHandler.getChartOutCurrentMonth();
+    }
+    
 }
