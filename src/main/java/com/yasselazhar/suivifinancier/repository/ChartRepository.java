@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.yasselazhar.suivifinancier.model.ChartIn;
 import com.yasselazhar.suivifinancier.model.ChartInOut;
 import com.yasselazhar.suivifinancier.model.ChartOut;
 import com.yasselazhar.suivifinancier.model.Income;
@@ -44,11 +45,22 @@ public interface ChartRepository extends JpaRepository<Income, Integer> {
 	
 	
 	@Query(value = "SELECT type_event.type as typeEvent, SUM(expense.montant) as sommeMontant, to_char(expense.date_expense, 'yyyy-mm') yearMonth "
-			+ "FROM expense\r\n"
-			+ "INNER JOIN type_event ON type_event.id = expense.type\r\n"
+			+ "FROM expense "
+			+ "INNER JOIN type_event ON type_event.id = expense.type "
 			+ "GROUP BY type_event.type,to_char(expense.date_expense, 'yyyy-mm') "
 			+ "HAVING to_char(expense.date_expense, 'yyyy-mm') = to_char(CURRENT_DATE, 'yyyy-mm')",
 			nativeQuery = true)
-	List<ChartOut> getChartOutCurrentYear();
+	List<ChartOut> getChartOutCurrentMonth();
+	
+	
+	
+	
+	@Query(value = "SELECT type_event.type as typeEvent, SUM(income.montant) as sommeMontant, to_char(income.date_income, 'yyyy-mm') yearMonth "
+			+ "FROM income "
+			+ "INNER JOIN type_event ON type_event.id = income.type "
+			+ "GROUP BY type_event.type,to_char(income.date_income, 'yyyy-mm') "
+			+ "HAVING to_char(income.date_income, 'yyyy-mm') = to_char(CURRENT_DATE, 'yyyy-mm')",
+			nativeQuery = true)
+	List<ChartIn> getChartInCurrentMonth();
 	
 }
