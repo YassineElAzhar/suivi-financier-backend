@@ -249,4 +249,12 @@ public class SuiviFinancierController {
     }
     
     
+
+    @CrossOrigin
+    @GetMapping("/getChartInCurrentMonth")
+    public Map<String, Object> getChartInCurrentMonth() {
+        return suiviFinancierHandler.getChartInCurrentMonth();
+    }
+    
+    
 }
