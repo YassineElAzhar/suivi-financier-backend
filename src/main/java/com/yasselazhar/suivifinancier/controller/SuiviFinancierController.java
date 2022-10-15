@@ -257,4 +257,12 @@ public class SuiviFinancierController {
     }
     
     
+
+    @CrossOrigin
+    @GetMapping("/getInflationRate")
+    public Map<String, Object> getInflationRate() {
+        return suiviFinancierHandler.getInflationRate();
+    }
+    
+    
 }

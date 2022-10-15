@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 
 import com.yasselazhar.suivifinancier.exception.ResourceNotFoundException;
+import com.yasselazhar.suivifinancier.external.api.ValetBankOfCanada;
 import com.yasselazhar.suivifinancier.model.Event;
 import com.yasselazhar.suivifinancier.model.Expense;
 import com.yasselazhar.suivifinancier.model.Income;
@@ -730,5 +731,43 @@ public class SuiviFinancierHandler {
     	return chartDataSet;
     }
     
+    
+    public Map<String, Object> getInflationRate() {
+
+    	Map<String, Object> chartDataSet = new HashMap<>();
+    	List<String> listChartLabels = new ArrayList<String>();
+    	List<Map<String,Object>> dataset = new ArrayList<>();
+    	Map<String, Object> datasetInflation = new HashMap<>();
+    	List<Integer> listInflationDataSet = new ArrayList<Integer>();
+    	
+        ValetBankOfCanada valetBankOfCanada = new ValetBankOfCanada();
+        
+        
+
+        
+        valetBankOfCanada.getInflationRate().forEach((date,inflationRate) -> {
+        	listChartLabels.add(date.substring(0,7));
+        	listInflationDataSet.add(inflationRate);
+        });
+        
+        
+
+        datasetInflation.put("label", "Points d'inflation");
+        datasetInflation.put("backgroundColor", "red");
+        datasetInflation.put("data", listInflationDataSet);
+    	
+    	
+    	
+    	//Nous alimentons notre dataset avec les données de ValetBackOfCanada
+    	Collections.addAll(dataset, datasetInflation);
+    	
+
+    	chartDataSet.put("chartLabels", listChartLabels);
+    	chartDataSet.put("chartTypeInit", "line");
+    	chartDataSet.put("dataset", dataset);
+    	
+    	
+    	return chartDataSet;
+    }
 	
 }
