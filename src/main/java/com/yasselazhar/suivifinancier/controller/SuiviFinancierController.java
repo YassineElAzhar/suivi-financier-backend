@@ -239,8 +239,7 @@ public class SuiviFinancierController {
     public Map<String, Object> getChartInOutCurrentYear() {
         return suiviFinancierHandler.getChartInOutCurrentYear();
     }
-    
-    
+
     @CrossOrigin
     @GetMapping("/getChartOutCurrentMonth")
     public Map<String, Object> getChartOutCurrentMonth() {
@@ -248,10 +247,20 @@ public class SuiviFinancierController {
     }
     
     
+
     @CrossOrigin
     @GetMapping("/getChartInCurrentMonth")
     public Map<String, Object> getChartInCurrentMonth() {
         return suiviFinancierHandler.getChartInCurrentMonth();
     }
+    
+    
+
+    @CrossOrigin
+    @GetMapping("/getInflationRate")
+    public Map<String, Object> getInflationRate() {
+        return suiviFinancierHandler.getInflationRate();
+    }
+    
     
 }

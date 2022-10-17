@@ -62,5 +62,6 @@ public interface ChartRepository extends JpaRepository<Income, Integer> {
 			+ "HAVING to_char(income.date_income, 'yyyy-mm') = to_char(CURRENT_DATE, 'yyyy-mm')",
 			nativeQuery = true)
 	List<ChartIn> getChartInCurrentMonth();
+
 	
 }
