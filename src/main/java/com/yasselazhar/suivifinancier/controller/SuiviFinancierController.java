@@ -33,9 +33,9 @@ public class SuiviFinancierController {
      * @return List of all incomes
      */
     @CrossOrigin
-    @GetMapping("/getAllIncomes")
-    public List<HashMap<String,String>> allIncomes() {
-        return suiviFinancierHandler.getAllIncomes();
+    @GetMapping("/getAllIncomes/{userId}")
+    public List<HashMap<String,String>> allIncomes(@PathVariable(value = "userId") int userId) {
+        return suiviFinancierHandler.getAllIncomes(userId);
     }
 
     /**

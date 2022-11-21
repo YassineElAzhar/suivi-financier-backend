@@ -67,8 +67,8 @@ public class SuiviFinancierHandler {
 	 * 
 	 * @return list of all incomes
 	 */
-	public List<HashMap<String,String>> getAllIncomes() {
-		List<Income> listIncomes = incomeRepository.findAll();
+	public List<HashMap<String,String>> getAllIncomes(int userId) {
+		List<Income> listIncomes = incomeRepository.findAllByUserId(userId);
 		
 		List<HashMap<String,String>> allIncomes = new ArrayList<>();
 		

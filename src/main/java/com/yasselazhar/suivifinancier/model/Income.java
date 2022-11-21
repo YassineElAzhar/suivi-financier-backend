@@ -23,6 +23,8 @@ public class Income {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private int userId;
+
     private int type;
 
     @NotBlank
@@ -53,6 +55,14 @@ public class Income {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public int getType() {
@@ -114,12 +124,9 @@ public class Income {
 
 	@Override
 	public String toString() {
-		return "Income [id=" + id + ", type=" + type + ", provenance=" + provenance + ", titre=" + titre + ", montant="
+		return "Income [id=" + id + ", userId=" + userId + ", type=" + type + ", provenance=" + provenance + ", titre=" + titre + ", montant="
 				+ montant + ", dateIncome=" + dateIncome + ", dinsert=" + dinsert + ", dupdate=" + dupdate + "]";
 	}
-    
-    
-
     
 
 }
