@@ -138,6 +138,7 @@ public class SuiviFinancierHandler {
 			eventToAdd.setExpenseId(0);
 			eventToAdd.setStartTime("00:00:00");
 			eventToAdd.setEndTime("00:00:00");
+			eventToAdd.setUserId(newIncome.getUserId());
 			eventRepository.save(eventToAdd);
 		} catch (Exception e) {
 			System.out.println("addIncome error" + e);
@@ -298,6 +299,7 @@ public class SuiviFinancierHandler {
 			eventToAdd.setIncomeId(0);
 			eventToAdd.setStartTime("00:00:00");
 			eventToAdd.setEndTime("00:00:00");
+			eventToAdd.setUserId(newExpense.getUserId());
 			eventRepository.save(eventToAdd);
 			
 		} catch (Exception e) {
