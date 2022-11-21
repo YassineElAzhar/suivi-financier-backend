@@ -236,25 +236,25 @@ public class SuiviFinancierController {
     
 
     @CrossOrigin
-    @GetMapping("/getChartInOutCurrentYear")
-    public Map<String, Object> getChartInOutCurrentYear() {
-        return suiviFinancierHandler.getChartInOutCurrentYear();
+    @GetMapping("/getChartInOutCurrentYear/{userId}")
+    public Map<String, Object> getChartInOutCurrentYear(@PathVariable(value = "userId") int userId) {
+        return suiviFinancierHandler.getChartInOutCurrentYear(userId);
     }
     
     
 
     @CrossOrigin
-    @GetMapping("/getChartOutCurrentMonth")
-    public Map<String, Object> getChartOutCurrentMonth() {
-        return suiviFinancierHandler.getChartOutCurrentMonth();
+    @GetMapping("/getChartOutCurrentMonth/{userId}")
+    public Map<String, Object> getChartOutCurrentMonth(@PathVariable(value = "userId") int userId) {
+        return suiviFinancierHandler.getChartOutCurrentMonth(userId);
     }
     
     
 
     @CrossOrigin
-    @GetMapping("/getChartInCurrentMonth")
-    public Map<String, Object> getChartInCurrentMonth() {
-        return suiviFinancierHandler.getChartInCurrentMonth();
+    @GetMapping("/getChartInCurrentMonth/{userId}")
+    public Map<String, Object> getChartInCurrentMonth(@PathVariable(value = "userId") int userId) {
+        return suiviFinancierHandler.getChartInCurrentMonth(userId);
     }
     
     

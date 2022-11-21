@@ -590,7 +590,7 @@ public class SuiviFinancierHandler {
      * Charts
      */
     
-    public Map<String, Object> getChartInOutCurrentYear() {
+    public Map<String, Object> getChartInOutCurrentYear(int userId) {
     	Map<String, Object> chartDataSet = new HashMap<>();
     	List<String> listChartLabels = new ArrayList<String>();
     	List<Map<String,Object>> dataset = new ArrayList<>();
@@ -606,7 +606,7 @@ public class SuiviFinancierHandler {
     	 */
     	//Nous récupérons les incomes depuis la base de données
     	Map<Integer, Integer> mapIncomesToAdd = new HashMap<>();
-    	chartRepository.getChartInOutIncomesCurrentYear().forEach(getChartInOutMap -> {
+    	chartRepository.getChartInOutIncomesCurrentYearByUserId(userId).forEach(getChartInOutMap -> {
     	    try {
     	    	//Nous traitons la date pour récupérer le mois
 				Date dateToConvert=new SimpleDateFormat("yyyy-MM").parse(getChartInOutMap.getYearMonth());
@@ -634,7 +634,7 @@ public class SuiviFinancierHandler {
     	 */
     	//Nous récupérons les expenses depuis la base de données
     	Map<Integer, Integer> mapExpensesToAdd = new HashMap<>();
-    	chartRepository.getChartInOutExpensesCurrentYear().forEach(getChartInOutMap -> {
+    	chartRepository.getChartInOutExpensesCurrentYearByUserId(userId).forEach(getChartInOutMap -> {
     	    try {
     	    	//Nous traitons la date pour récupérer le mois
 				Date dateToConvert=new SimpleDateFormat("yyyy-MM").parse(getChartInOutMap.getYearMonth());
@@ -679,7 +679,7 @@ public class SuiviFinancierHandler {
     }
     
     
-    public Map<String, Object> getChartOutCurrentMonth(){
+    public Map<String, Object> getChartOutCurrentMonth(int userId){
     	Map<String, Object> chartDataSet = new HashMap<>();
     	List<String> chartLabels = new ArrayList<String>();
     	List<Map<String,Object>> dataset = new ArrayList<>();
@@ -692,7 +692,7 @@ public class SuiviFinancierHandler {
         int currentYear = currentdate.getYear();
     	
     	data.put("label", "Expense " + currentMonth.toString() + " " + String.valueOf(currentYear));
-    	chartRepository.getChartOutCurrentMonth().forEach(getChartOutMap -> {
+    	chartRepository.getChartOutCurrentMonthByUserId(userId).forEach(getChartOutMap -> {
     		chartLabels.add(getChartOutMap.getTypeEvent());
     		dataList.add(getChartOutMap.getSommeMontant());
     	});
@@ -706,7 +706,7 @@ public class SuiviFinancierHandler {
     }
     
     
-    public Map<String, Object> getChartInCurrentMonth(){
+    public Map<String, Object> getChartInCurrentMonth(int userId){
     	Map<String, Object> chartDataSet = new HashMap<>();
     	List<String> chartLabels = new ArrayList<String>();
     	List<Map<String,Object>> dataset = new ArrayList<>();
@@ -719,7 +719,7 @@ public class SuiviFinancierHandler {
         int currentYear = currentdate.getYear();
     	
     	data.put("label", "Incomes " + currentMonth.toString() + " " + String.valueOf(currentYear));
-    	chartRepository.getChartInCurrentMonth().forEach(getChartInMap -> {
+    	chartRepository.getChartInCurrentMonthByUserId(userId).forEach(getChartInMap -> {
     		chartLabels.add(getChartInMap.getTypeEvent());
     		dataList.add(getChartInMap.getSommeMontant());
     	});
