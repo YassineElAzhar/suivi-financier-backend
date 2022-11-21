@@ -94,9 +94,9 @@ public class SuiviFinancierController {
      * @return List of all expenses
      */
     @CrossOrigin
-    @GetMapping("/getAllExpenses")
-    public List<HashMap<String,String>> allExpenses() {
-        return suiviFinancierHandler.getAllExpenses();
+    @GetMapping("/getAllExpenses/{userId}")
+    public List<HashMap<String,String>> allExpenses(@PathVariable(value = "userId") int userId) {
+        return suiviFinancierHandler.getAllExpenses(userId);
     }
 
     /**

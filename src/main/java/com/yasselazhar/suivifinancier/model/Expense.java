@@ -24,6 +24,8 @@ public class Expense {
     private int id;
 
     private int type;
+    
+    private int userId;
 
     @NotBlank
     private String destinataire;
@@ -52,6 +54,14 @@ public class Expense {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public int getType() {
@@ -112,10 +122,10 @@ public class Expense {
 
 	@Override
 	public String toString() {
-		return "Expense [id=" + id + ", type=" + type + ", destinataire=" + destinataire + ", titre=" + titre
+		return "Expense [id=" + id + ", userId=" + userId + ", type=" + type + ", destinataire=" + destinataire + ", titre=" + titre
 				+ ", montant=" + montant + ", dateExpense=" + dateExpense + ", dinsert=" + dinsert + ", dupdate="
 				+ dupdate + "]";
-	}   
+	} 
 
     
 

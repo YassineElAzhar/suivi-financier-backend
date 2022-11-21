@@ -228,8 +228,8 @@ public class SuiviFinancierHandler {
 	 * 
 	 * @return list of all expenses
 	 */
-	public List<HashMap<String,String>> getAllExpenses() {
-		List<Expense> listExpenses = expenseRepository.findAll();
+	public List<HashMap<String,String>> getAllExpenses(int userId) {
+		List<Expense> listExpenses = expenseRepository.findAllByUserId(userId);
 		
 		List<HashMap<String,String>> allExpenses = new ArrayList<>();
 		
