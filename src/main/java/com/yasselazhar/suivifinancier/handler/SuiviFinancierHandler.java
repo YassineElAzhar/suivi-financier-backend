@@ -381,8 +381,8 @@ public class SuiviFinancierHandler {
      * 
      * @return list of all events
      */
-    public List<Event> getAllEvents() {
-        List<Event> listEvents = eventRepository.findAll();
+    public List<Event> getAllEvents(int userId) {
+        List<Event> listEvents = eventRepository.findAllByUserId(userId);
         
         
         return listEvents;
@@ -427,6 +427,7 @@ public class SuiviFinancierHandler {
                 expense.setDateExpense(event.getDateEvent());
                 expense.setDestinataire("Ajout automatique");
                 expense.setMontant(0);
+                expense.setUserId(event.getUserId());
                 Expense newExpense = expenseRepository.save(expense);
                 event.setExpenseId(newExpense.getId());
             } else if((typeEvent.getIsExpense() == 0) && (typeEvent.getIsIncome() == 1)) {
@@ -436,11 +437,11 @@ public class SuiviFinancierHandler {
                 income.setDateIncome(event.getDateEvent());
                 income.setProvenance("Ajout automatique");
                 income.setMontant(0);
+                income.setUserId(event.getUserId());
                 incomeRepository.save(income);
                 Income newIncome = incomeRepository.save(income);
                 event.setIncomeId(newIncome.getId());
             }
-            
             newEvent = eventRepository.save(event);
         } catch (Exception e) {
             System.out.println("addEvent error" + e);
@@ -530,7 +531,7 @@ public class SuiviFinancierHandler {
     
     
     
-    public Map<String, List<Map<String,String>>> getEventsByMonth(String calendarMonth, String calendarYear) {
+    public Map<String, List<Map<String,String>>> getEventsByMonth(int userId, String calendarMonth, String calendarYear) {
 
     	Map<String, List<Map<String,String>>> returnedEvents = new HashMap<>();
     	List<Event> eventList = new ArrayList<Event>();
@@ -545,7 +546,7 @@ public class SuiviFinancierHandler {
             Date startDateFormatted = formatter.parse(startDate);
             Date endDateFormatted = formatter.parse(endDate);
 
-            eventList = eventRepository.findByDateEventBetween(startDateFormatted,endDateFormatted);
+            eventList = eventRepository.findByUserIdAndDateEventBetween(userId, startDateFormatted,endDateFormatted);
 
 
             eventList.forEach((Event event) -> {

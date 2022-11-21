@@ -157,9 +157,9 @@ public class SuiviFinancierController {
      * @return List of all events
      */
     @CrossOrigin
-    @GetMapping("/getAllEvents")
-    public List<Event> allEvents() {
-        return suiviFinancierHandler.getAllEvents();
+    @GetMapping("/getAllEvents/{userId}")
+    public List<Event> allEvents(@PathVariable(value = "userId") int userId) {
+        return suiviFinancierHandler.getAllEvents(userId);
     }
 
     /**
@@ -180,11 +180,12 @@ public class SuiviFinancierController {
      * @throws ParseException 
      */
     @CrossOrigin
-    @GetMapping("/getEventsByMonth/{calendarMonth}/{calendarYear}")
+    @GetMapping("/getEventsByMonth/{userId}/{calendarMonth}/{calendarYear}")
 	public Map<String, List<Map<String,String>>> eventsByMonth(
+    		@PathVariable(value = "userId") int userId,
     		@PathVariable(value = "calendarMonth") String calendarMonth,
     		@PathVariable(value = "calendarYear") String calendarYear) {
-        return suiviFinancierHandler.getEventsByMonth(calendarMonth,calendarYear);
+        return suiviFinancierHandler.getEventsByMonth(userId, calendarMonth,calendarYear);
     }
     
 

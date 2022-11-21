@@ -23,6 +23,8 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private int userId;
+
     private int type;
 
     @NotBlank
@@ -57,6 +59,14 @@ public class Event {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public int getType() {
@@ -133,7 +143,7 @@ public class Event {
 
 	@Override
 	public String toString() {
-		return "Event [id=" + id + ", type=" + type + ", titre=" + titre + ", dateEvent=" + dateEvent + ", startTime="
+		return "Event [id=" + id + ", type=" + type + ", userId=" + userId + ", titre=" + titre + ", dateEvent=" + dateEvent + ", startTime="
 				+ startTime + ", endTime=" + endTime + ", expenseId=" + expenseId + ", incomeId=" + incomeId
 				+ ", dinsert=" + dinsert + ", dupdate=" + dupdate + "]";
 	}

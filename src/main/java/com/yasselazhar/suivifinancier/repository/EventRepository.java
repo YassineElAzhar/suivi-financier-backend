@@ -14,7 +14,8 @@ import com.yasselazhar.suivifinancier.model.Event;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Integer> {
-	List<Event> findByDateEventBetween(Date start, Date end);
+	List<Event> findAllByUserId(int userId);
+	List<Event> findByUserIdAndDateEventBetween(int userId, Date start, Date end);
 	Event findByExpenseId(int expenseId);
 	Event findByIncomeId(int incomeId);
 }
